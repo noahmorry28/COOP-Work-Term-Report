@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noah Morreale — Co-op Work Term Report, Summer 2026</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #eef1f0;
+    --surface: #ffffff;
+    --ink: #14202a;
+    --ink-soft: #51626c;
+    --line: #cdd6d4;
+    --accent: #0f5c47;
+    --accent-soft: #e1ece7;
+    --amber: #c98a2e;
+    --amber-soft: #f5e9d8;
+    --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.65;
+  }
+
+  a{ color: var(--accent); }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .shell{ display:grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+
+  /* ---------- sidebar ---------- */
+  .rail{
+    background: var(--ink);
+    color: #e9e7dd;
+    padding: 2rem 1.75rem;
+    position: sticky;
+    top:0;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow-y:auto;
+    border-right: 1px solid rgba(255,255,255,.06);
+  }
+  .id-badge{ display:flex; gap:.85rem; align-items:flex-start; margin-bottom:1.75rem; }
+  .mono-badge{
+    flex:none; width:44px; height:44px; border-radius:8px;
+    background: linear-gradient(135deg, var(--accent), #0a4535);
+    color:#eafff4; font-family: var(--serif); font-weight:700; font-size:1.1rem;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 6px 16px -6px rgba(15,92,71,.7);
+  }
+  .rail-top .who{ font-family: var(--serif); font-weight:600; font-size: 1.45rem; line-height:1.2; margin:0 0 .3rem; }
+  .rail-top .role{ font-family: var(--mono); font-size: .76rem; color: #9fc9b8; margin:0; }
+  .meta-list{
+    list-style:none; padding:1rem 0; margin:0 0 2rem;
+    font-family: var(--mono); font-size: .78rem; color:#c7c4b4;
+    display:grid; gap:.55rem;
+    border-top:1px solid #33372f; border-bottom:1px solid #33372f;
+  }
+  .meta-list li span{ color:#7f8578; margin-right:.5em; }
+  nav.toc{ display:grid; gap:.15rem; }
+  nav.toc a{
+    font-family: var(--mono); font-size: .82rem; color:#cfccbf; text-decoration:none;
+    padding:.42rem .55rem; border-radius:5px; display:flex; gap:.6em;
+    border-left: 2px solid transparent;
+  }
+  nav.toc a:hover, nav.toc a.active{ background:#20241e; color:#fff; border-left-color: #7fc4a6; }
+  .rail-bottom{ font-family: var(--mono); font-size:.72rem; color:#767c6e; padding-top:1rem; display:grid; gap:.3rem; }
+  .rail-bottom a{ color:#9fc9b8; }
+  .rail-toggle{ display:none; }
+
+  /* ---------- main / bands ---------- */
+  main{ display:block; }
+  .band{ width:100%; position:relative; }
+  .band-inner{
+    max-width: 1180px; margin:0 auto;
+    padding: clamp(3.5rem,7vw,6rem) clamp(1.5rem,4vw,4.5rem);
+  }
+
+  .band-ink{ background: var(--ink); }
+  .band-tint{ background: var(--accent-soft); }
+  .band-paper{ background: var(--paper); }
+
+  .band-ink h2, .band-ink .lede, .band-ink p, .band-ink .note-fact, .band-ink .note-quote,
+  .band-ink dt, .band-ink dd, .band-ink .who2{ color:#eef1f0; }
+  .band-ink .lede{ color:#b9c6c2; }
+  .band-ink h2{ border-bottom-color: rgba(255,255,255,.22); }
+  .band-ink .frame-note{ border-left-color: rgba(255,255,255,.3); }
+  .band-ink .note-num{ color:#7fc4a6; }
+  .band-ink .stack li{ background: rgba(255,255,255,.1); color:#eafff4; }
+  .band-ink figcaption{ color:#a9b6ba; border-top-color: rgba(255,255,255,.18); }
+  .band-ink figure.shot{ box-shadow: 0 26px 55px -26px rgba(0,0,0,.65); border-color: rgba(255,255,255,.14); }
+  .band-ink blockquote{ color:#eef1f0; border-left-color: var(--amber); }
+  .band-ink .note-quote::before{ color: var(--amber); }
+
+  /* ---------- hero ---------- */
+  .hero-band .band-inner{ padding-top: clamp(4rem,9vw,7rem); padding-bottom: clamp(3rem,6vw,4.5rem); }
+  .hero-frame{ display:grid; grid-template-columns: minmax(0,1fr) 380px; gap: 3.5rem; align-items:center; }
+  .terminal{
+    background: #1c2830; color:#d9f2e6; border-radius:8px; font-family: var(--mono); font-size:.85rem;
+    padding:1.1rem 1.3rem; margin-bottom:1.9rem; border:1px solid rgba(255,255,255,.1);
+    display:inline-flex; flex-direction:column; gap:.15rem;
+  }
+  .terminal .bar{ display:flex; gap:6px; margin-bottom:.7rem; }
+  .terminal .dot{ width:10px; height:10px; border-radius:50%; background:#3c4238; }
+  .terminal .prompt{ color:#7fc4a6; }
+  .terminal .type::after{ content:"▍"; animation: blink 1s steps(1) infinite; color:#7fc4a6; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  h1.headline{
+    font-family: var(--serif); font-weight: 700; font-size: clamp(2.6rem, 4.6vw, 4rem);
+    line-height:1.08; margin: 0 0 1.25rem; max-width: 17ch; color:#eef1f0;
+  }
+  .lede{ font-size:1.18rem; color: var(--ink-soft); max-width: 58ch; margin: 0; }
+
+  .gauge-wrap{ display:flex; flex-direction:column; align-items:center; gap:1rem; }
+  .gauge-caption{ font-family: var(--mono); font-size:.78rem; color:#8ea39c; text-align:center; }
+  .gauge-caption b{ color:#eafff4; font-weight:600; }
+
+  .stats-row{
+    margin-top: clamp(2.5rem,5vw,3.5rem);
+    display:grid; grid-template-columns: repeat(3,1fr);
+    border-top: 1px solid rgba(255,255,255,.16);
+  }
+  .stats-row div{ padding: 1.6rem 1.5rem 0; border-left: 1px solid rgba(255,255,255,.16); }
+  .stats-row div:first-child{ border-left:none; padding-left:0; }
+  .stat-num{ font-family: var(--serif); font-weight:700; font-size: clamp(2.2rem,3.4vw,3rem); color:#eafff4; line-height:1; }
+  .stat-label{ font-family: var(--mono); font-size:.78rem; color:#8ea39c; margin-top:.5rem; }
+
+  /* ---------- section frame ---------- */
+  section{ scroll-margin-top: 2rem; }
+  .section-frame{ display:grid; grid-template-columns: minmax(0,1fr) 250px; gap: 3.25rem; align-items:start; }
+  section h2{
+    font-family: var(--serif); font-weight:600; font-size: clamp(1.9rem,2.6vw,2.4rem);
+    margin: 0 0 1.15rem; padding-bottom: .85rem; border-bottom: 1px solid var(--line);
+  }
+  section p{ max-width: 66ch; }
+  section p + p{ margin-top:1em; }
+
+  .frame-note{ border-left: 1px solid var(--line); padding: .1rem 0 .1rem 1.4rem; }
+  .note-num{
+    display:block; font-family: var(--serif); font-weight:700;
+    font-size: clamp(4rem,7vw,6.4rem); color: var(--accent); opacity:1; line-height:.85; margin-bottom: .9rem;
+  }
+  .note-fact{ font-family: var(--mono); font-size:.8rem; color: var(--ink-soft); line-height:1.8; margin:0; }
+  .note-quote{ font-family: var(--serif); font-style: italic; font-size: 1.2rem; color: var(--ink); margin:0; line-height:1.4; }
+  .note-quote::before{ content:"“"; display:block; font-family: var(--serif); font-style:normal; font-size:2.6rem; color: var(--accent); line-height:.4; margin-bottom:.55rem; }
+
+  .ring{
+    width:100px; height:100px; border-radius:50%;
+    background: conic-gradient(var(--accent) 0% 75%, var(--line) 75% 100%);
+    display:flex; align-items:center; justify-content:center; margin-bottom:.8rem;
+  }
+  .ring span{
+    width:72px; height:72px; border-radius:50%; background: var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-size:.95rem; font-weight:600; color: var(--ink);
+  }
+
+  .two-col{ display:grid; grid-template-columns: 1.15fr .85fr; gap: 2.25rem; align-items:start; }
+  @media (max-width: 720px){ .two-col{ grid-template-columns:1fr; } }
+
+  .fact-card{
+    background: var(--surface); border:1px solid var(--line); border-top: 4px solid var(--accent);
+    border-radius: 4px; padding:1.2rem 1.4rem; box-shadow: 0 18px 40px -26px rgba(20,32,42,.4);
+  }
+  .fact-card dl{ margin:0; display:grid; }
+  .fact-card div{ display:grid; grid-template-columns: 92px 1fr; gap:.5rem; padding:.6rem 0; border-bottom:1px dashed var(--line); }
+  .fact-card div:last-child{ border-bottom:none; }
+  .fact-card dt{ font-family: var(--mono); font-size:.72rem; color: var(--ink-soft); }
+  .fact-card dd{ margin:0; font-size:.94rem; font-weight:500; }
+
+  .goals{
+    list-style:none; padding:0; margin:1.6rem 0 0; background: var(--surface);
+    border:1px solid var(--line); border-radius:6px; overflow:hidden;
+    box-shadow: 0 18px 40px -28px rgba(20,32,42,.35);
+  }
+  .goals li{
+    display:grid; grid-template-columns: 22px 1fr; gap:.95rem; align-items:start;
+    padding:1.1rem 1.3rem; border-left: 4px solid var(--accent); border-bottom: 1px solid var(--line);
+  }
+  .goals li:last-child{ border-bottom:none; }
+  .goals li.partial{ border-left-color: var(--amber); }
+  .goals .mark{ font-family: var(--mono); font-weight:700; color: var(--accent); padding-top:.15rem; }
+  .goals li.partial .mark{ color: var(--amber); }
+  .goals li strong{ display:block; margin-bottom:.2rem; font-size:1.03rem; }
+  .goals li span.note{ color: var(--ink-soft); font-size:.95rem; }
+
+  .stack{ display:flex; flex-wrap:wrap; gap:.5rem; margin: 1.35rem 0 0; padding:0; list-style:none; }
+  .stack li{ font-family: var(--mono); font-size:.78rem; background: var(--accent-soft); color: var(--accent); border-radius:5px; padding:.34rem .68rem; font-weight:500; }
+
+  figure.shot{
+    margin: 1.85rem 0; border:1px solid var(--line); border-radius:8px; overflow:hidden;
+    background: var(--surface); box-shadow: 0 22px 46px -30px rgba(20,32,42,.4);
+  }
+  figure.shot .art{ display:block; width:100%; height:auto; background: var(--surface); }
+  figcaption{ font-family: var(--mono); font-size:.75rem; color: var(--ink-soft); padding:.85rem 1.15rem; border-top:1px solid var(--line); }
+  figcaption em{ font-style:normal; color: var(--amber); }
+
+  blockquote{
+    margin: 2.1rem 0; padding: .1rem 0 .1rem 1.3rem; border-left: 4px solid var(--amber);
+    font-family: var(--serif); font-size:1.28rem; font-style:italic; color: var(--ink); max-width: 52ch;
+  }
+
+  .report-footer{ font-family: var(--mono); font-size:.8rem; color:#a9b6ba; }
+  .report-footer p{ margin:0; }
+  .footer-mark{ font-family: var(--serif); font-weight:700; font-size:1.6rem; color:#eef1f0; margin-bottom:.75rem; }
+
+  @media (max-width: 940px){
+    .hero-frame{ grid-template-columns: 1fr; }
+    .gauge-wrap{ margin-top:1rem; }
+    .stats-row{ grid-template-columns: 1fr 1fr 1fr; }
+    .section-frame{ grid-template-columns: 1fr; gap:1.25rem; }
+    .frame-note{ border-left:none; border-top: 1px dashed var(--line); padding: 1rem 0 0; margin-top: .5rem; }
+    .band-ink .frame-note{ border-top-color: rgba(255,255,255,.25); }
+    .note-num{ font-size: 3rem; margin-bottom:.4rem; }
+  }
+
+  @media (max-width: 880px){
+    .shell{ grid-template-columns: 1fr; }
+    .rail{ position: relative; height:auto; top:0; padding:1.25rem 1.5rem; }
+    nav.toc{ display:none; grid-template-columns: 1fr 1fr; }
+    nav.toc.open{ display:grid; }
+    .meta-list{ display:none; }
+    .rail-bottom{ display:none; }
+    .rail-toggle{
+      display:block; font-family: var(--mono); font-size:.78rem; background:none;
+      border:1px solid #3c4238; color:#e9e7dd; padding:.5rem .8rem; border-radius:6px; margin-bottom:1rem;
+    }
+    .stats-row{ grid-template-columns: 1fr; }
+    .stats-row div{ border-left:none; border-top: 1px solid rgba(255,255,255,.16); padding: 1.2rem 0 0; }
+    .stats-row div:first-child{ border-top:none; }
+  }
+
+  @media print{
+    .rail{ display:none; }
+    .shell{ grid-template-columns: 1fr; }
+    .band-inner{ max-width:none; padding: 0 .5in 1in; }
+    .band-ink{ background:none; }
+    .band-ink h2, .band-ink p, .band-ink .lede{ color: var(--ink); }
+    .terminal, .gauge-wrap, .stats-row{ display:none; }
+    .section-frame{ grid-template-columns: 1fr; }
+    .frame-note{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="rail" id="rail">
+    <div class="rail-top">
+      <button class="rail-toggle" id="railToggle" aria-expanded="false">Sections ▾</button>
+      <div class="id-badge">
+        <span class="mono-badge">NM</span>
+        <div>
+          <p class="who">Noah Morreale</p>
+          <p class="role">Co-op Work Term Report</p>
+        </div>
+      </div>
+
+      <ul class="meta-list">
+        <li><span>Term</span>Summer 2026 (May–Aug)</li>
+        <li><span>Role</span>Business Systems Analyst</li>
+        <li><span>Employer</span>Deloitte</li>
+        <li><span>Location</span>Toronto, Ontario</li>
+        <li><span>Program</span>B.Comp, Computer Science</li>
+      </ul>
+
+      <nav class="toc" id="toc">
+        <a href="#abstract">Abstract</a>
+        <a href="#employer">Employer</a>
+        <a href="#goals">Goals</a>
+        <a href="#job">The work</a>
+        <a href="#reflection">Reflections</a>
+        <a href="#thanks">Acknowledgments</a>
+      </nav>
+    </div>
+
+    <div class="rail-bottom">
+      <span>nmorreal@uoguelph.ca</span>
+      <a href="#">https://github.com/noahmorry28</a>
+      <a href="#">https://ca.linkedin.com/in/noahmorreale</a>
+    </div>
+  </aside>
+
+  <main>
+
+    <div class="band band-ink hero-band">
+      <div class="band-inner">
+        <div class="hero-frame">
+          <div>
+            <div class="terminal">
+              <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <div><span class="prompt">$</span> noah --term "Summer 2026"</div>
+              <div class="type">→ Business Systems Analyst, Deloitte Tech &amp; Transformation, Toronto</div>
+            </div>
+
+            <h1 class="headline">Moving the needle on an insurer's rating engine.</h1>
+            <p class="lede">
+              This report covers my Summer 2026 work term as a Business Systems Analyst on
+              Deloitte's Tech and Transformation practice, embedded on an engagement with a
+              home and auto insurance client migrating their rating logic to Earnix. By the
+              end of the term I was independently building, testing, and presenting that
+              work - not just following someone else's spec.
+            </p>
+
+            <div class="stats-row">
+              <div><div class="stat-num">4</div><div class="stat-label">months, May–Aug</div></div>
+              <div><div class="stat-num">1</div><div class="stat-label">platform migration</div></div>
+              <div><div class="stat-num">3/4</div><div class="stat-label">goals fully met</div></div>
+            </div>
+          </div>
+
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 400 240" width="100%" height="auto" role="img" aria-label="Gauge illustrating progress migrating from the legacy rating system to Earnix">
+              <path d="M40 200 A160 160 0 0 1 200 40" stroke="#f5e9d8" stroke-width="26" fill="none" stroke-linecap="round"/>
+              <path d="M200 40 A160 160 0 0 1 360 200" stroke="#2a4c42" stroke-width="26" fill="none" stroke-linecap="round"/>
+              <path d="M200 40 A160 160 0 0 1 335 145" stroke="#7fc4a6" stroke-width="26" fill="none" stroke-linecap="round"/>
+              <line x1="200" y1="200" x2="300" y2="108" stroke="#eef1f0" stroke-width="6" stroke-linecap="round"/>
+              <circle cx="200" cy="200" r="16" fill="#eef1f0"/>
+              <circle cx="200" cy="200" r="6" fill="#14202a"/>
+              <text x="40" y="228" font-family="IBM Plex Mono, monospace" font-size="13" fill="#a9b6ba">legacy</text>
+              <text x="360" y="228" font-family="IBM Plex Mono, monospace" font-size="13" fill="#a9b6ba" text-anchor="end">earnix</text>
+            </svg>
+            <p class="gauge-caption">Where the engagement stood by the end of<br><b>my</b> work term.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band band-paper">
+      <div class="band-inner">
+        <section id="abstract">
+          <div class="section-frame">
+            <div>
+              <h2>Abstract</h2>
+              <p>
+                I spent Summer 2026 at Deloitte as a Business Systems Analyst on the Tech and
+                Transformation team, staffed on an engagement helping a home and auto insurance
+                client migrate their legacy rating and analysis logic onto Earnix, a modern
+                rating and analytics platform used across the insurance industry. Over four
+                months I moved from shadowing existing work to owning pieces of it end to end -
+                building rating structures, running requirement-gathering sessions directly with
+                the client, and testing my own development before it shipped. What I'll want a
+                reader to take away is that this term wasn't a "junior analyst" job in the
+                traditional sense: on a small, generalist team, everyone does everything, and
+                that structure changed how I think about what a business analyst actually is.
+              </p>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">01</span>
+              <p class="note-fact">4 months<br>Toronto, ON<br>Tech &amp; Transformation</p>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-tint">
+      <div class="band-inner">
+        <section id="employer">
+          <div class="section-frame">
+            <div>
+              <h2>About Deloitte</h2>
+              <div class="two-col">
+                <div>
+                  <p>
+                    Deloitte is one of the world's largest professional services firms, and I sat
+                    within its Tech and Transformation practice - the group that helps clients
+                    modernize the systems their business actually runs on, rather than building
+                    products of Deloitte's own. My engagement placed me with a home and auto
+                    insurance client working through a multi-year migration of their pricing and
+                    rating logic off an aging, in-house system and onto Earnix, a purpose-built
+                    rating and analytics platform used widely across the insurance industry.
+                  </p>
+                  <p>
+                    The most interesting thing about how my specific team runs isn't the client
+                    or the software - it's that there's no separation between "developers,"
+                    "testers," and "business analysts." Everyone on the team gathers
+                    requirements, builds, tests, and demos their own work, which meant I was
+                    never just handed a fully scoped ticket and told to code it.
+                  </p>
+                </div>
+                <div class="fact-card">
+                  <dl>
+                    <div><dt>Practice</dt><dd>Tech &amp; Transformation</dd></div>
+                    <div><dt>Client</dt><dd>Home &amp; Auto Insurance</dd></div>
+                    <div><dt>Engagement</dt><dd>Legacy → Earnix migration</dd></div>
+                    <div><dt>Team</dt><dd>Generalist, no silos</dd></div>
+                  </dl>
+                </div>
+              </div>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">02</span>
+              <ul class="stack"><li>Consulting</li><li>InsurTech</li></ul>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-paper">
+      <div class="band-inner">
+        <section id="goals">
+          <div class="section-frame">
+            <div>
+              <h2>Learning outcomes for this term</h2>
+              <p>
+                Going into the term, I knew this role would push me outside a purely technical
+                comfort zone, so most of my goals were about operating well on a client-facing,
+                cross-functional team rather than learning a single tool.
+              </p>
+              <ul class="goals">
+                <li class="done">
+                  <span class="mark">✓</span>
+                  <div><strong>Operate at a high level in a team environment without sacrificing quality</strong>
+                  <span class="note">Because our team doesn't split dev, testing, and elaboration across different people, I had to learn to move quickly through a story while still testing it rigorously — rating errors directly affect what a real customer gets charged, so "quick" and "careless" couldn't be the same thing.</span></div>
+                </li>
+                <li class="done">
+                  <span class="mark">✓</span>
+                  <div><strong>Own requirements from elaboration through to a working build</strong>
+                  <span class="note">By mid-term I was running elaboration sessions with the client directly on new epics, making sure requirements were fully understood on both sides before any development started, then building and testing that same work myself.</span></div>
+                </li>
+                <li class="partial">
+                  <span class="mark">~</span>
+                  <div><strong>Speak confidently in important meetings and demo work to non-technical leaders</strong>
+                  <span class="note">I got real reps presenting completed development to client stakeholders and explaining technical decisions in plain terms, but I'm still working on staying just as concise and confident when a senior leader pushes back on the spot rather than just asking clarifying questions.</span></div>
+                </li>
+                <li class="done">
+                  <span class="mark">✓</span>
+                  <div><strong>Get comfortable in the Earnix platform</strong>
+                  <span class="note">I started the term shadowing existing rating structures and rules and finished it building new pre-rating rules independently, which is the clearest evidence of progress I have from the whole term.</span></div>
+                </li>
+              </ul>
+              <ul class="stack">
+                <li>Earnix</li><li>Requirements Elaboration</li><li>Test Case Design</li><li>Client Demos</li><li>Jira</li><li>Excel</li>
+              </ul>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">03</span>
+              <div class="ring"><span>3/4</span></div>
+              <p class="note-fact">Goals fully met</p>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-ink">
+      <div class="band-inner">
+        <section id="job">
+          <div class="section-frame">
+            <div>
+              <h2>What the job actually looked like</h2>
+              <p>
+                My core project was helping migrate a home and auto insurance client's rating
+                and analysis logic off an outdated legacy system and onto Earnix. Practically,
+                that meant rebuilding pre-rating rules and rating structures that already
+                existed in the old system inside the new platform — not from scratch
+                conceptually, but faithfully and correctly, which turned out to be its own kind
+                of hard: it's easy to build something that looks right and much harder to prove
+                it behaves identically to a system that's been running in production for years.
+              </p>
+
+              <figure class="shot">
+                <svg class="art" viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram of migrating rating logic from a legacy system to Earnix">
+                  <rect x="36" y="120" width="170" height="90" rx="4" fill="#ffffff" stroke="#14202a" stroke-width="1.5"/>
+                  <text x="121" y="160" font-family="IBM Plex Mono, monospace" font-size="13" fill="#14202a" text-anchor="middle">Legacy</text>
+                  <text x="121" y="178" font-family="IBM Plex Mono, monospace" font-size="13" fill="#14202a" text-anchor="middle">rating system</text>
+
+                  <rect x="494" y="120" width="170" height="90" rx="4" fill="#0f5c47" stroke="#0f5c47" stroke-width="1.5"/>
+                  <text x="579" y="160" font-family="IBM Plex Mono, monospace" font-size="13" fill="#ffffff" text-anchor="middle">Earnix</text>
+                  <text x="579" y="178" font-family="IBM Plex Mono, monospace" font-size="13" fill="#e1ece7" text-anchor="middle">rating platform</text>
+
+                  <line x1="206" y1="165" x2="494" y2="165" stroke="#c98a2e" stroke-width="2" stroke-dasharray="7 6"/>
+                  <polygon points="494,165 478,157 478,173" fill="#c98a2e"/>
+
+                  <rect x="248" y="60" width="130" height="30" rx="15" fill="#e1ece7" stroke="#0f5c47" stroke-width="1"/>
+                  <text x="313" y="80" font-family="IBM Plex Mono, monospace" font-size="11" fill="#0f5c47" text-anchor="middle">Pre-rating rules</text>
+
+                  <rect x="278" y="130" width="140" height="30" rx="15" fill="#e1ece7" stroke="#0f5c47" stroke-width="1"/>
+                  <text x="348" y="150" font-family="IBM Plex Mono, monospace" font-size="11" fill="#0f5c47" text-anchor="middle">Rating structures</text>
+
+                  <rect x="250" y="220" width="120" height="30" rx="15" fill="#f5e9d8" stroke="#c98a2e" stroke-width="1"/>
+                  <text x="310" y="240" font-family="IBM Plex Mono, monospace" font-size="11" fill="#c98a2e" text-anchor="middle">Test cases</text>
+                </svg>
+             
+              </figure>
+
+              <p>
+                On a given day I could be developing an already-defined pre-rating rule inside
+                Earnix, demoing finished work directly to the client, gathering requirements in
+                depth on a brand-new epic, running an elaboration session to make sure both
+                sides agreed on what "done" meant before a line of code was written, or fully
+                testing a development story someone on my team had built. The skill that
+                surprised me most wasn't technical - it was learning to ask the right
+                clarifying question in an elaboration session, since a vague requirement caught
+                early costs an hour of conversation, but caught late costs a rebuild.
+              </p>
+
+              <blockquote>"How does it handle this edge case?" a client stakeholder asked mid-demo. I already knew — I'd written the test for it the week before.</blockquote>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">04</span>
+              <p class="note-quote">Quick and careless couldn't be the same thing.</p>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-tint">
+      <div class="band-inner">
+        <section id="reflection">
+          <div class="section-frame">
+            <div>
+              <h2>Conclusions</h2>
+              <p>
+                If someone described this report in one sentence, I'd want it to be that I
+                spent a term learning that "business analyst" doesn't mean staying out of the
+                technical weeds - on a lean, generalist team, understanding the business need
+                and building the correct rating logic are the same skill, not two separate
+                ones. Going into my next term, I'm more comfortable owning a piece of work
+                fully, from the first client conversation about what they need through to a
+                tested, working result.
+              </p>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">05</span>
+              <p class="note-quote">The business need and the correct logic are the same skill.</p>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-paper">
+      <div class="band-inner">
+        <section id="thanks">
+          <div class="section-frame">
+            <div>
+              <h2>Acknowledgments</h2>
+              <p>
+                I want to thank everyone on the team for helping me get up to speed and for trusting me to own pieces of work end to end. I also want to thank my supervisor for giving me the space to learn and grow, and for providing feedback that helped me improve my skills and confidence.
+
+              </p>
+            </div>
+            <aside class="frame-note">
+              <span class="note-num">06</span>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div class="band band-ink">
+      <div class="band-inner">
+        <div class="report-footer">
+          <div class="footer-mark">NM</div>
+          <p>Bachelor of Computing Co-op Work Term Report — Summer 2026 — University of Guelph<br>
+          No confidential employer or client information is included in this report.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const toggle = document.getElementById('railToggle');
+  const toc = document.getElementById('toc');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const open = toc.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+  }
+
+  const links = Array.from(document.querySelectorAll('nav.toc a'));
+  const sections = links.map(a => document.querySelector(a.getAttribute('href')));
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = '#' + entry.target.id;
+      const link = links.find(a => a.getAttribute('href') === id);
+      if (!link) return;
+      if (entry.isIntersecting) links.forEach(l => l.classList.remove('active'));
+      if (entry.isIntersecting) link.classList.add('active');
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  sections.forEach(s => s && spy.observe(s));
+</script>
+
+</body>
+</html>
